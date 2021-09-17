@@ -1,232 +1,639 @@
 <?php
-/*
- * This is the child theme for Scapeshot Music theme.
+/**
+ * Functions and definitions
  *
- * (Please see https://developer.wordpress.org/themes/advanced-topics/child-themes/#how-to-create-a-child-theme)
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package WordPress
+ * @subpackage Twenty_Twenty_One
+ * @since Twenty Twenty-One 1.0
  */
-function scapeshot_music_enqueue_styles() {
-    // Include parent theme CSS.
-    wp_enqueue_style( 'scapeshot-style', get_template_directory_uri() . '/style.css', null, date( 'Ymd-Gis', filemtime( get_template_directory() . '/style.css' ) ) );
-    
-    // Include child theme CSS.
-    wp_enqueue_style( 'scapeshot-music-style', get_stylesheet_directory_uri() . '/style.css', array( 'scapeshot-style' ), date( 'Ymd-Gis', filemtime( get_stylesheet_directory() . '/style.css' ) ) );
 
-	// Load the rtl.
-	if ( is_rtl() ) {
-		wp_enqueue_style( 'scapeshot-rtl', get_template_directory_uri() . '/rtl.css', array( 'scapeshot-style' ), $version );
-	}
-
-	// Enqueue child block styles after parent block style.
-	wp_enqueue_style( 'scapeshot-music-block-style', get_stylesheet_directory_uri() . '/assets/css/child-blocks.css', array( 'scapeshot-block-style' ), date( 'Ymd-Gis', filemtime( get_stylesheet_directory() . '/assets/css/child-blocks.css' ) ) );
+// This theme requires WordPress 5.3 or later.
+if ( version_compare( $GLOBALS['wp_version'], '5.3', '<' ) ) {
+	require get_template_directory() . '/inc/back-compat.php';
 }
-add_action( 'wp_enqueue_scripts', 'scapeshot_music_enqueue_styles' );
+
+if ( ! function_exists( 'twenty_twenty_one_setup' ) ) {
+	/**
+	 * Sets up theme defaults and registers support for various WordPress features.
+	 *
+	 * Note that this function is hooked into the after_setup_theme hook, which
+	 * runs before the init hook. The init hook is too late for some features, such
+	 * as indicating support for post thumbnails.
+	 *
+	 * @since Twenty Twenty-One 1.0
+	 *
+	 * @return void
+	 */
+	function twenty_twenty_one_setup() {
+		/*
+		 * Make theme available for translation.
+		 * Translations can be filed in the /languages/ directory.
+		 * If you're building a theme based on Twenty Twenty-One, use a find and replace
+		 * to change 'twentytwentyone' to the name of your theme in all the template files.
+		 */
+		load_theme_textdomain( 'twentytwentyone', get_template_directory() . '/languages' );
+
+		// Add default posts and comments RSS feed links to head.
+		add_theme_support( 'automatic-feed-links' );
+
+		/*
+		 * Let WordPress manage the document title.
+		 * This theme does not use a hard-coded <title> tag in the document head,
+		 * WordPress will provide it for us.
+		 */
+		add_theme_support( 'title-tag' );
+
+		/**
+		 * Add post-formats support.
+		 */
+		add_theme_support(
+			'post-formats',
+			array(
+				'link',
+				'aside',
+				'gallery',
+				'image',
+				'quote',
+				'status',
+				'video',
+				'audio',
+				'chat',
+			)
+		);
+
+		/*
+		 * Enable support for Post Thumbnails on posts and pages.
+		 *
+		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+		 */
+		add_theme_support( 'post-thumbnails' );
+		set_post_thumbnail_size( 1568, 9999 );
+
+		register_nav_menus(
+			array(
+				'primary' => esc_html__( 'Primary menu', 'twentytwentyone' ),
+				'footer'  => __( 'Secondary menu', 'twentytwentyone' ),
+			)
+		);
+
+		/*
+		 * Switch default core markup for search form, comment form, and comments
+		 * to output valid HTML5.
+		 */
+		add_theme_support(
+			'html5',
+			array(
+				'comment-form',
+				'comment-list',
+				'gallery',
+				'caption',
+				'style',
+				'script',
+				'navigation-widgets',
+			)
+		);
+
+		/*
+		 * Add support for core custom logo.
+		 *
+		 * @link https://codex.wordpress.org/Theme_Logo
+		 */
+		$logo_width  = 300;
+		$logo_height = 100;
+
+		add_theme_support(
+			'custom-logo',
+			array(
+				'height'               => $logo_height,
+				'width'                => $logo_width,
+				'flex-width'           => true,
+				'flex-height'          => true,
+				'unlink-homepage-logo' => true,
+			)
+		);
+
+		// Add theme support for selective refresh for widgets.
+		add_theme_support( 'customize-selective-refresh-widgets' );
+
+		// Add support for Block Styles.
+		add_theme_support( 'wp-block-styles' );
+
+		// Add support for full and wide align images.
+		add_theme_support( 'align-wide' );
+
+		// Add support for editor styles.
+		add_theme_support( 'editor-styles' );
+		$background_color = get_theme_mod( 'background_color', 'D1E4DD' );
+		if ( 127 > Twenty_Twenty_One_Custom_Colors::get_relative_luminance_from_hex( $background_color ) ) {
+			add_theme_support( 'dark-editor-style' );
+		}
+
+		$editor_stylesheet_path = './assets/css/style-editor.css';
+
+		// Note, the is_IE global variable is defined by WordPress and is used
+		// to detect if the current browser is internet explorer.
+		global $is_IE;
+		if ( $is_IE ) {
+			$editor_stylesheet_path = './assets/css/ie-editor.css';
+		}
+
+		// Enqueue editor styles.
+		add_editor_style( $editor_stylesheet_path );
+
+		// Add custom editor font sizes.
+		add_theme_support(
+			'editor-font-sizes',
+			array(
+				array(
+					'name'      => esc_html__( 'Extra small', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'XS', 'Font size', 'twentytwentyone' ),
+					'size'      => 16,
+					'slug'      => 'extra-small',
+				),
+				array(
+					'name'      => esc_html__( 'Small', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'S', 'Font size', 'twentytwentyone' ),
+					'size'      => 18,
+					'slug'      => 'small',
+				),
+				array(
+					'name'      => esc_html__( 'Normal', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'M', 'Font size', 'twentytwentyone' ),
+					'size'      => 20,
+					'slug'      => 'normal',
+				),
+				array(
+					'name'      => esc_html__( 'Large', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'L', 'Font size', 'twentytwentyone' ),
+					'size'      => 24,
+					'slug'      => 'large',
+				),
+				array(
+					'name'      => esc_html__( 'Extra large', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'XL', 'Font size', 'twentytwentyone' ),
+					'size'      => 40,
+					'slug'      => 'extra-large',
+				),
+				array(
+					'name'      => esc_html__( 'Huge', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'XXL', 'Font size', 'twentytwentyone' ),
+					'size'      => 96,
+					'slug'      => 'huge',
+				),
+				array(
+					'name'      => esc_html__( 'Gigantic', 'twentytwentyone' ),
+					'shortName' => esc_html_x( 'XXXL', 'Font size', 'twentytwentyone' ),
+					'size'      => 144,
+					'slug'      => 'gigantic',
+				),
+			)
+		);
+
+		// Custom background color.
+		add_theme_support(
+			'custom-background',
+			array(
+				'default-color' => 'd1e4dd',
+			)
+		);
+
+		// Editor color palette.
+		$black     = '#000000';
+		$dark_gray = '#28303D';
+		$gray      = '#39414D';
+		$green     = '#D1E4DD';
+		$blue      = '#D1DFE4';
+		$purple    = '#D1D1E4';
+		$red       = '#E4D1D1';
+		$orange    = '#E4DAD1';
+		$yellow    = '#EEEADD';
+		$white     = '#FFFFFF';
+
+		add_theme_support(
+			'editor-color-palette',
+			array(
+				array(
+					'name'  => esc_html__( 'Black', 'twentytwentyone' ),
+					'slug'  => 'black',
+					'color' => $black,
+				),
+				array(
+					'name'  => esc_html__( 'Dark gray', 'twentytwentyone' ),
+					'slug'  => 'dark-gray',
+					'color' => $dark_gray,
+				),
+				array(
+					'name'  => esc_html__( 'Gray', 'twentytwentyone' ),
+					'slug'  => 'gray',
+					'color' => $gray,
+				),
+				array(
+					'name'  => esc_html__( 'Green', 'twentytwentyone' ),
+					'slug'  => 'green',
+					'color' => $green,
+				),
+				array(
+					'name'  => esc_html__( 'Blue', 'twentytwentyone' ),
+					'slug'  => 'blue',
+					'color' => $blue,
+				),
+				array(
+					'name'  => esc_html__( 'Purple', 'twentytwentyone' ),
+					'slug'  => 'purple',
+					'color' => $purple,
+				),
+				array(
+					'name'  => esc_html__( 'Red', 'twentytwentyone' ),
+					'slug'  => 'red',
+					'color' => $red,
+				),
+				array(
+					'name'  => esc_html__( 'Orange', 'twentytwentyone' ),
+					'slug'  => 'orange',
+					'color' => $orange,
+				),
+				array(
+					'name'  => esc_html__( 'Yellow', 'twentytwentyone' ),
+					'slug'  => 'yellow',
+					'color' => $yellow,
+				),
+				array(
+					'name'  => esc_html__( 'White', 'twentytwentyone' ),
+					'slug'  => 'white',
+					'color' => $white,
+				),
+			)
+		);
+
+		add_theme_support(
+			'editor-gradient-presets',
+			array(
+				array(
+					'name'     => esc_html__( 'Purple to yellow', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $purple . ' 0%, ' . $yellow . ' 100%)',
+					'slug'     => 'purple-to-yellow',
+				),
+				array(
+					'name'     => esc_html__( 'Yellow to purple', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $yellow . ' 0%, ' . $purple . ' 100%)',
+					'slug'     => 'yellow-to-purple',
+				),
+				array(
+					'name'     => esc_html__( 'Green to yellow', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $green . ' 0%, ' . $yellow . ' 100%)',
+					'slug'     => 'green-to-yellow',
+				),
+				array(
+					'name'     => esc_html__( 'Yellow to green', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $yellow . ' 0%, ' . $green . ' 100%)',
+					'slug'     => 'yellow-to-green',
+				),
+				array(
+					'name'     => esc_html__( 'Red to yellow', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $red . ' 0%, ' . $yellow . ' 100%)',
+					'slug'     => 'red-to-yellow',
+				),
+				array(
+					'name'     => esc_html__( 'Yellow to red', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $yellow . ' 0%, ' . $red . ' 100%)',
+					'slug'     => 'yellow-to-red',
+				),
+				array(
+					'name'     => esc_html__( 'Purple to red', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $purple . ' 0%, ' . $red . ' 100%)',
+					'slug'     => 'purple-to-red',
+				),
+				array(
+					'name'     => esc_html__( 'Red to purple', 'twentytwentyone' ),
+					'gradient' => 'linear-gradient(160deg, ' . $red . ' 0%, ' . $purple . ' 100%)',
+					'slug'     => 'red-to-purple',
+				),
+			)
+		);
+
+		/*
+		* Adds starter content to highlight the theme on fresh sites.
+		* This is done conditionally to avoid loading the starter content on every
+		* page load, as it is a one-off operation only needed once in the customizer.
+		*/
+		if ( is_customize_preview() ) {
+			require get_template_directory() . '/inc/starter-content.php';
+			add_theme_support( 'starter-content', twenty_twenty_one_get_starter_content() );
+		}
+
+		// Add support for responsive embedded content.
+		add_theme_support( 'responsive-embeds' );
+
+		// Add support for custom line height controls.
+		add_theme_support( 'custom-line-height' );
+
+		// Add support for experimental link color control.
+		add_theme_support( 'experimental-link-color' );
+
+		// Add support for experimental cover block spacing.
+		add_theme_support( 'custom-spacing' );
+
+		// Add support for custom units.
+		// This was removed in WordPress 5.6 but is still required to properly support WP 5.5.
+		add_theme_support( 'custom-units' );
+	}
+}
+add_action( 'after_setup_theme', 'twenty_twenty_one_setup' );
 
 /**
- * Add child theme editor styles
+ * Register widget area.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
+ *
+ * @return void
  */
-function scapeshot_music_editor_style() {
-	add_editor_style( array(
-			'assets/css/child-editor-style.css',
-			scapeshot_fonts_url(),
-			get_theme_file_uri( 'assets/css/font-awesome/css/font-awesome.css' ),
+function twenty_twenty_one_widgets_init() {
+
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Footer', 'twentytwentyone' ),
+			'id'            => 'sidebar-1',
+			'description'   => esc_html__( 'Add widgets here to appear in your footer.', 'twentytwentyone' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
 		)
 	);
 }
-add_action( 'after_setup_theme', 'scapeshot_music_editor_style', 11 );
+add_action( 'widgets_init', 'twenty_twenty_one_widgets_init' );
 
 /**
- * Enqueue editor styles for Gutenberg
- */
-function scapeshot_music_block_editor_styles() {
-	// Enqueue child block editor style after parent editor block css.
-	wp_enqueue_style( 'scapeshot-music-block-editor-style', get_stylesheet_directory_uri() . '/assets/css/child-editor-blocks.css', array( 'scapeshot-block-editor-style' ), date( 'Ymd-Gis', filemtime( get_stylesheet_directory() . '/assets/css/child-editor-blocks.css' ) ) );
-}
-add_action( 'enqueue_block_editor_assets', 'scapeshot_music_block_editor_styles', 11 );
-
-/**
- * Adds custom classes to the array of body classes.
+ * Set the content width in pixels, based on the theme's design and stylesheet.
  *
- * @param array $classes Classes for the body element.
- * @return array
+ * Priority 0 to make it available to lower priority callbacks.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @global int $content_width Content width.
+ *
+ * @return void
  */
-function scapeshot_music_body_classes( $classes ) {
-	// Added color scheme to body class.
-	$classes['color-scheme'] = 'color-scheme-music';
+function twenty_twenty_one_content_width() {
+	// This variable is intended to be overruled from themes.
+	// Open WPCS issue: {@link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1043}.
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+	$GLOBALS['content_width'] = apply_filters( 'twenty_twenty_one_content_width', 750 );
+}
+add_action( 'after_setup_theme', 'twenty_twenty_one_content_width', 0 );
 
-	//Sticky Playlist
-	$enable_section = get_theme_mod( 'scapeshot_sticky_playlist_visibility', 'disabled' );
-
-	if ( scapeshot_check_section( $enable_section ) ) {
-		$classes[] = 'sticky-playlist-enabled';
+/**
+ * Enqueue scripts and styles.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
+ */
+function twenty_twenty_one_scripts() {
+	// Note, the is_IE global variable is defined by WordPress and is used
+	// to detect if the current browser is internet explorer.
+	global $is_IE, $wp_scripts;
+	if ( $is_IE ) {
+		// If IE 11 or below, use a flattened stylesheet with static values replacing CSS Variables.
+		wp_enqueue_style( 'twenty-twenty-one-style', get_template_directory_uri() . '/assets/css/ie.css', array(), wp_get_theme()->get( 'Version' ) );
+	} else {
+		// If not IE, use the standard stylesheet.
+		wp_enqueue_style( 'twenty-twenty-one-style', get_template_directory_uri() . '/style.css', array(), wp_get_theme()->get( 'Version' ) );
 	}
 
-	return $classes;
-}
-add_filter( 'body_class', 'scapeshot_music_body_classes', 100 );
+	// RTL styles.
+	wp_style_add_data( 'twenty-twenty-one-style', 'rtl', 'replace' );
 
-/**
- * Change default header text color
- */
-function scapeshot_music_dark_header_default_color( $args ) {
-	$args['default-image'] =  get_theme_file_uri( 'assets/images/header-image.jpg' );
+	// Print styles.
+	wp_enqueue_style( 'twenty-twenty-one-print-style', get_template_directory_uri() . '/assets/css/print.css', array(), wp_get_theme()->get( 'Version' ), 'print' );
 
-	return $args;
-}
-add_filter( 'scapeshot_custom_header_args', 'scapeshot_music_dark_header_default_color' );
-
-/**
- * Add an HTML class to MediaElement.js container elements to aid styling.
- *
- * Extends the core _wpmejsSettings object to add a new feature via the
- * MediaElement.js plugin API.
- */
-function scapeshot_music_mejs_add_container_class() {
-	if ( ! wp_script_is( 'mediaelement', 'done' ) ) {
-		return;
+	// Threaded comment reply styles.
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
 	}
 
-	$next_track_text   = esc_attr__( 'Next Track', 'scapeshot-music' );
-	$prev_track_text   = esc_attr__( 'Previous Track', 'scapeshot-music' );
-	$toggle_text       = esc_attr__( 'Toggle Playlist', 'scapeshot-music' );
+	// Register the IE11 polyfill file.
+	wp_register_script(
+		'twenty-twenty-one-ie11-polyfills-asset',
+		get_template_directory_uri() . '/assets/js/polyfills.js',
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
 
-	$next_track_icon = scapeshot_get_svg( array(
-		'icon'     => 'next',
-		'fallback' => true,
-	) );
+	// Register the IE11 polyfill loader.
+	wp_register_script(
+		'twenty-twenty-one-ie11-polyfills',
+		null,
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+	wp_add_inline_script(
+		'twenty-twenty-one-ie11-polyfills',
+		wp_get_script_polyfill(
+			$wp_scripts,
+			array(
+				'Element.prototype.matches && Element.prototype.closest && window.NodeList && NodeList.prototype.forEach' => 'twenty-twenty-one-ie11-polyfills-asset',
+			)
+		)
+	);
 
-	$prev_track_icon = scapeshot_get_svg( array(
-		'icon'     => 'prev',
-		'fallback' => true,
-	) );
+	// Main navigation scripts.
+	if ( has_nav_menu( 'primary' ) ) {
+		wp_enqueue_script(
+			'twenty-twenty-one-primary-navigation-script',
+			get_template_directory_uri() . '/assets/js/primary-navigation.js',
+			array( 'twenty-twenty-one-ie11-polyfills' ),
+			wp_get_theme()->get( 'Version' ),
+			true
+		);
+	}
 
-	$toggle_icon = scapeshot_get_svg( array(
-		'icon'     => 'playlist',
-		'fallback' => true,
-	) );
+	// Responsive embeds script.
+	wp_enqueue_script(
+		'twenty-twenty-one-responsive-embeds-script',
+		get_template_directory_uri() . '/assets/js/responsive-embeds.js',
+		array( 'twenty-twenty-one-ie11-polyfills' ),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'twenty_twenty_one_scripts' );
 
-	$toggle_close = scapeshot_get_svg( array(
-		'icon'     => 'close',
-		'fallback' => true,
-	) );
+/**
+ * Enqueue block editor script.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
+ */
+function twentytwentyone_block_editor_script() {
 
- 	?>
+	wp_enqueue_script( 'twentytwentyone-editor', get_theme_file_uri( '/assets/js/editor.js' ), array( 'wp-blocks', 'wp-dom' ), wp_get_theme()->get( 'Version' ), true );
+}
+
+add_action( 'enqueue_block_editor_assets', 'twentytwentyone_block_editor_script' );
+
+/**
+ * Fix skip link focus in IE11.
+ *
+ * This does not enqueue the script because it is tiny and because it is only for IE11,
+ * thus it does not warrant having an entire dedicated blocking script being loaded.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @link https://git.io/vWdr2
+ */
+function twenty_twenty_one_skip_link_focus_fix() {
+
+	// If SCRIPT_DEBUG is defined and true, print the unminified file.
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		echo '<script>';
+		include get_template_directory() . '/assets/js/skip-link-focus-fix.js';
+		echo '</script>';
+	}
+
+	// The following is minified via `npx terser --compress --mangle -- assets/js/skip-link-focus-fix.js`.
+	?>
 	<script>
-	(function() {
-		var settings = window._wpmejsSettings || {};
-
-		settings.features = settings.features || mejs.MepDefaults.features;
-
-		settings.features.push( 'scapeshot_class' );
-
-		MediaElementPlayer.prototype.buildscapeshot_class = function(player, controls, layers, media) {
-			if ( ! player.isVideo ) {
-				var container = player.container[0] || player.container;
-
-				container.style.height = '';
-				container.style.width = '';
-				player.options.setDimensions = false;
-			}
-
-			if ( jQuery( '#' + player.id ).parents('#sticky-playlist-section').length ) {
-				player.container.addClass( 'mejs-container mejs-sticky-playlist-container' );
-
-				jQuery( '#' + player.id ).parent().children('.wp-playlist-tracks').addClass('displaynone');
-
-				var volume_slider = controls[0].children[5];
-
-				if ( jQuery( '#' + player.id ).parent().children('.wp-playlist-tracks').length > 0) {
-					var playlist_button =
-					jQuery('<div class="mejs-playlist-button mejs-toggle-playlist ">' +
-						'<button type="button" aria-controls="mep_0" title="<?php echo esc_attr( $toggle_text ); ?>"><?php echo $toggle_icon; ?><?php echo $toggle_close; ?>
-						</button>' +
-					'</div>')
-
-					// append it to the toolbar
-					.appendTo( jQuery( '#' + player.id ) )
-
-					// add a click toggle event
-					.on( 'click',function() {
-						jQuery( '#' + player.id ).parent().children('.wp-playlist-tracks').slideToggle();
-						jQuery( this ).toggleClass('is-open')
-					});
-
-					var play_button = controls[0].children[0];
-
-					// Add next button after volume slider
-					var next_button =
-					jQuery('<div class="mejs-next-button mejs-next">' +
-						'<button type="button" aria-controls="' + player.id
-						+ '" title="<?php echo esc_attr( $next_track_text ); ?>"><?php echo $next_track_icon; ?></button>' +
-					'</div>')
-
-					// insert after volume slider
-					.insertAfter(play_button)
-
-					// add a click toggle event
-					.on( 'click',function() {
-						jQuery( '#' + player.id ).parent().find( '.wp-playlist-next').trigger('click');
-					});
-
-					// Add prev button after volume slider
-					var previous_button =
-					jQuery('<div class="mejs-previous-button mejs-previous">' +
-						'<button type="button" aria-controls="' + player.id
-						+ '" title="<?php echo esc_attr( $prev_track_text ); ?>"><?php echo $prev_track_icon; ?></button>' +
-					'</div>')
-
-					// insert after volume slider
-					.insertBefore( play_button )
-
-					// add a click toggle event
-					.on( 'click',function() {
-						jQuery( '#' + player.id ).parent().find( '.wp-playlist-prev').trigger('click');
-					});
-				}
-			} else {
-				player.container.addClass( 'mejs-container' );
-
-				if ( jQuery( '#' + player.id ).parent().children('.wp-playlist-tracks').length > 0) {
-					var play_button = controls[0].children[0];
-
-					// Add next button after volume slider
-					var next_button =
-					jQuery('<div class="mejs-next-button mejs-next">' +
-						'<button type="button" aria-controls="' + player.id
-						+ '" title="<?php echo esc_attr( $next_track_text ); ?>"><?php echo $next_track_icon; ?></button>' +
-					'</div>')
-
-					// insert after volume slider
-					.insertAfter(play_button)
-
-					// add a click toggle event
-					.on( 'click',function() {
-						jQuery( '#' + player.id ).parent().find( '.wp-playlist-next').trigger('click');
-					});
-
-					// Add prev button after volume slider
-					var previous_button =
-					jQuery('<div class="mejs-previous-button mejs-previous">' +
-						'<button type="button" aria-controls="' + player.id
-						+ '" title="<?php echo esc_attr( $prev_track_text ); ?>"><?php echo $prev_track_icon; ?></button>' +
-					'</div>')
-
-					// insert after volume slider
-					.insertBefore( play_button )
-
-					// add a click toggle event
-					.on( 'click',function() {
-						jQuery( '#' + player.id ).parent().find( '.wp-playlist-prev').trigger('click');
-					});
-				}
-			}
-		}
-	})();
+	/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",(function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())}),!1);
 	</script>
 	<?php
 }
-add_action( 'wp_print_footer_scripts', 'scapeshot_music_mejs_add_container_class' );
+add_action( 'wp_print_footer_scripts', 'twenty_twenty_one_skip_link_focus_fix' );
 
 /**
- * Load Customizer Options
+ * Enqueue non-latin language styles.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
  */
-require trailingslashit( get_stylesheet_directory() ) . 'inc/customizer/sticky-playlist.php';
+function twenty_twenty_one_non_latin_languages() {
+	$custom_css = twenty_twenty_one_get_non_latin_css( 'front-end' );
+
+	if ( $custom_css ) {
+		wp_add_inline_style( 'twenty-twenty-one-style', $custom_css );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'twenty_twenty_one_non_latin_languages' );
+
+// SVG Icons class.
+require get_template_directory() . '/classes/class-twenty-twenty-one-svg-icons.php';
+
+// Custom color classes.
+require get_template_directory() . '/classes/class-twenty-twenty-one-custom-colors.php';
+new Twenty_Twenty_One_Custom_Colors();
+
+// Enhance the theme by hooking into WordPress.
+require get_template_directory() . '/inc/template-functions.php';
+
+// Menu functions and filters.
+require get_template_directory() . '/inc/menu-functions.php';
+
+// Custom template tags for the theme.
+require get_template_directory() . '/inc/template-tags.php';
+
+// Customizer additions.
+require get_template_directory() . '/classes/class-twenty-twenty-one-customize.php';
+new Twenty_Twenty_One_Customize();
+
+// Block Patterns.
+require get_template_directory() . '/inc/block-patterns.php';
+
+// Block Styles.
+require get_template_directory() . '/inc/block-styles.php';
+
+// Dark Mode.
+require_once get_template_directory() . '/classes/class-twenty-twenty-one-dark-mode.php';
+new Twenty_Twenty_One_Dark_Mode();
+
+/**
+ * Enqueue scripts for the customizer preview.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
+ */
+function twentytwentyone_customize_preview_init() {
+	wp_enqueue_script(
+		'twentytwentyone-customize-helpers',
+		get_theme_file_uri( '/assets/js/customize-helpers.js' ),
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+
+	wp_enqueue_script(
+		'twentytwentyone-customize-preview',
+		get_theme_file_uri( '/assets/js/customize-preview.js' ),
+		array( 'customize-preview', 'customize-selective-refresh', 'jquery', 'twentytwentyone-customize-helpers' ),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+}
+add_action( 'customize_preview_init', 'twentytwentyone_customize_preview_init' );
+
+/**
+ * Enqueue scripts for the customizer.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
+ */
+function twentytwentyone_customize_controls_enqueue_scripts() {
+
+	wp_enqueue_script(
+		'twentytwentyone-customize-helpers',
+		get_theme_file_uri( '/assets/js/customize-helpers.js' ),
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+}
+add_action( 'customize_controls_enqueue_scripts', 'twentytwentyone_customize_controls_enqueue_scripts' );
+
+/**
+ * Calculate classes for the main <html> element.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
+ */
+function twentytwentyone_the_html_classes() {
+	/**
+	 * Filters the classes for the main <html> element.
+	 *
+	 * @since Twenty Twenty-One 1.0
+	 *
+	 * @param string The list of classes. Default empty string.
+	 */
+	$classes = apply_filters( 'twentytwentyone_html_classes', '' );
+	if ( ! $classes ) {
+		return;
+	}
+	echo 'class="' . esc_attr( $classes ) . '"';
+}
+
+/**
+ * Add "is-IE" class to body if the user is on Internet Explorer.
+ *
+ * @since Twenty Twenty-One 1.0
+ *
+ * @return void
+ */
+function twentytwentyone_add_ie_class() {
+	?>
+	<script>
+	if ( -1 !== navigator.userAgent.indexOf( 'MSIE' ) || -1 !== navigator.appVersion.indexOf( 'Trident/' ) ) {
+		document.body.classList.add( 'is-IE' );
+	}
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'twentytwentyone_add_ie_class' );

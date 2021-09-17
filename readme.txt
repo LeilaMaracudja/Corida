@@ -1,64 +1,119 @@
-=== Scapeshot Music ===
-Contributors: catchthemes
-Tags: one-column, two-columns, right-sidebar, grid-layout, custom-background, custom-header, custom-menu, custom-logo, editor-style, featured-image-header, featured-images, flexible-header, footer-widgets,  microformats, post-formats, rtl-language-support, sticky-post, threaded-comments, theme-options, translation-ready, blog, photography, portfolio
-Requires at least: 5.5
+=== Twenty Twenty-One ===
+Contributors: wordpressdotorg
+Requires at least: 5.3
 Tested up to: 5.8
 Requires PHP: 5.6
-License: GNU General Public License v2 or later
+Stable tag: 1.4
+License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
-Scapeshot Music is a free dark corporate WordPress theme that’s been crafted with simplicity and creativity in mind.
 
 == Description ==
 
-ScapeShot Music is a clean and minimal Music WordPress theme for all kinds of music websites. The theme is ideal for all artists and bands who are in the music industry. It is a child theme of a multipurpose Fullscreen Photography theme, ScapeShot. While the parent theme is an all-rounder theme, ScapeShot Music is solely dedicated to music and promoting businesses alike. It is fully responsive and your music website looks absolutely gorgeous and sensational across all screen sizes. ScapeShot Music comes with a responsive music design with many extensive features and functionalities. Features like Sticky Playlist, Header Media, Featured Content, Hero Content, Portfolio, Services, Testimonials, and many more have been included in the ScapeShot Music theme. All of the features and sections in ScapeShot Music are highly customizable and helps in promoting your music and music business. Moreover, the design in Scapeshot Music has been built in a way that fits all kinds of music websites. The color option is also unlimited for sections like Header Text and Background. With all the amazing features along with an attractive, bold music design, ScapeShot Music is the perfect choice for your music website without troubling your wallet. For more information, check out Theme Instructions at https://catchthemes.com/themes/scapeshot-music/#theme-instructions and Demo at https://catchthemes.com/demo/scapeshot-music/
+Twenty Twenty-One is a blank canvas for your ideas and it makes the block editor your best brush.
+
+With new block patterns, which allow you to create a beautiful layout in a matter of seconds, this theme’s soft colors and eye-catching — yet timeless — design will let your work shine.
+
+Take it for a spin! See how Twenty Twenty-One elevates your portfolio, business website, or personal blog.
 
 == Installation ==
 
 1. In your admin panel, go to Appearance -> Themes and click the 'Add New' button.
-2. Type in Scapeshot Music in the search form and press the 'Enter' key on your keyboard.
+2. Type in Twenty Twenty-One in the search form and press the 'Enter' key on your keyboard.
 3. Click on the 'Activate' button to use your new theme right away.
-4. Go to https://catchthemes.com/themes/scapeshot-music/#theme-instructions/ for a guide on how to customize this theme.
-5. Navigate to Appearance -> Customize in your admin panel and customize to taste.
+4. Go to INSERT ABOUT PAGE for a guide on how to customize this theme.
+5. Navigate to Appearance > Customize in your admin panel and customize to your taste.
 
-== Frequently Asked Questions ==
-
-= Does this theme support any plugins? =
-
-Theme supports all plugins from catchplugins.com
-
-= Where can I find theme documentation? =
-
-You can check our Theme Instructions at https://catchthemes.com/themes/scapeshot-music in the Theme Instructions Tab.
-
-= Where can I find theme demo? =
-
-You can check our Theme Demo at https://catchthemes.com/demo/scapeshot-music/
-
-= More FAQ =
-
-For more FAQs, visit https://catchthemes.com/frequently-asked-questions/
+== Privacy ==
+Twenty Twenty-One uses LocalStorage to save the setting when Dark Mode support is turned on or off.
+LocalStorage is necessary for the setting to work and is only used when a user clicks on the Dark Mode button.
+No data is saved in the database or transferred.
 
 == Changelog ==
 
-= 1.0 (Released: August 26, 2021) =
-* Initial release
+= 1.4 =
+* Released: July 20, 2021
+
+https://wordpress.org/support/article/twenty-twenty-one-changelog#Version_1.4
+
+= 1.3 =
+* Released: April 14, 2021
+
+https://wordpress.org/support/article/twenty-twenty-one-changelog#Version_1.3
+
+= 1.2 =
+* Released: March 9, 2021
+
+https://wordpress.org/support/article/twenty-twenty-one-changelog#Version_1.2
+
+= 1.1 =
+* Released: December 22, 2020
+
+https://wordpress.org/support/article/twenty-twenty-one-changelog#Version_1.1
+
+= 1.0 =
+* Released: December 8, 2020
+
+https://wordpress.org/support/article/twenty-twenty-one-changelog#Version_1.0
 
 == Copyright ==
 
-Scapeshot Music WordPress Theme, Copyright 2012-2021 Catchthemes.com
-Scapeshot Music is distributed under the terms of the GNU GPL
+Twenty Twenty-One WordPress Theme, 2020-2021 WordPress.org
+Twenty Twenty-One is distributed under the terms of the GNU GPL.
 
-== Resources ==
-* Based on Underscores http://underscores.me/, (C) 2012-2021 Automattic, Inc., [GPLv2 or later](https://www.gnu.org/licenses/gpl-2.0.html)
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
 
-* Images
-	Header Image and Screenshot main image
-	License: CC0, Creative Commons CC0 license
-	Source: https://pxhere.com/en/photo/182377
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-	Screenshot playlist image
-	License: CC0, Creative Commons CC0 license
-	https://pxhere.com/en/photo/860904
 
-	All images are licensed under Creative Commons Zero (CC0) license
+Twenty Twenty-One is derived from Seedlet, (C) 2020 Automattic, Inc.
+
+Twenty Twenty-One is also based on:
+
+Twenty Nineteen. 2018-2021 WordPress.org
+Twenty Nineteen is distributed under the terms of the GNU GPL v2 or later.
+
+Twenty Seventeen. Copyright (C) 2016-2021 WordPress.org
+Twenty Seventeen is distributed under the terms of the GNU GPL v2 or later.
+
+Twenty Sixteen. Copyright (C) 2015-2021 WordPress.org
+Twenty Sixteen is distributed under the terms of the GNU GPL v2 or later.
+
+Twenty Twenty. Copyright (C) 2020-2021 WordPress.org
+Twenty Twenty is distributed under the terms of the GNU GPL v2 or later.
+
+Underscores https://underscores.me/, Copyright (C) 2012-2021 Automattic, Inc.
+Underscores is distributed under the terms of the GNU GPL v2 or later.
+
+Normalizing styles have been helped along thanks to the fine work of
+Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
+
+Unless otherwise noted, the icons in this theme are derived from the WordPress
+Icons Library, licensed under the terms of the GNU GPL v2 or later.
+https://github.com/WordPress/gutenberg/tree/master/packages/icons
+
+This theme bundles the following third-party resources:
+
+input[type='checkbox'], input[type='radio'], input[type='ranged'],
+https://css-tricks.com/custom-styling-form-inputs-with-modern-css-features/
+https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+https://codepen.io/aaroniker/pen/ZEYoxEY Copyright (c) 2020 Aaron Iker
+https://codepen.io/chriscoyier/pen/FtnAa Copyright (c) 2020 Chris Coyier
+License: MIT.
+
+Images
+Art by Berthe Morisot 1841-1895. Public domain.
+https://www.wikiart.org/en/berthe-morisot/playing-in-the-sand
+https://www.wikiart.org/en/berthe-morisot/roses-tremieres-hollyhocks-1884
+https://www.wikiart.org/en/berthe-morisot/young-woman-in-mauve
+https://www.wikiart.org/en/berthe-morisot/in-the-bois-de-boulogne
+https://www.wikiart.org/en/berthe-morisot/daffodils
+https://www.wikiart.org/en/berthe-morisot/self-portrait-1885
+https://www.wikiart.org/en/berthe-morisot/the-garden-at-bougival-1884
+https://www.wikiart.org/en/berthe-morisot/villa-with-orange-trees-nice
+https://www.wikiart.org/en/berthe-morisot/reading
